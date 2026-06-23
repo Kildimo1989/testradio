@@ -1,9 +1,144 @@
 const NATIVE_IRISH_STATIONS = [
-  { id: "rte-1", name: "RTÉ Radio 1", stream: "https://edge.audio.lwr.rte.ie/lrn/live/radio1/playlist.m3u8", logo: "https://www.rte.ie/assets/static/images/logo-rte-radio1.png", genre: "Talk / News" },
-  { id: "rte-2fm", name: "RTÉ 2FM", stream: "https://edge.audio.lwr.rte.ie/lrn/live/2fm/playlist.m3u8", logo: "https://www.rte.ie/assets/static/images/logo-rte-2fm.png", genre: "Pop / Chart" },
-  { id: "today-fm", name: "Today FM", stream: "https://stream.revma.ihrhls.com/zc3393", logo: "https://www.todayfm.com/assets/images/logo.png", genre: "Rock / Indie" },
-  { id: "newstalk", name: "Newstalk", stream: "https://stream.revma.ihrhls.com/zc3389", logo: "https://www.newstalk.com/assets/images/logo.png", genre: "National Talk" },
-  { id: "spin-1038", name: "SPIN 1038", stream: "https://stream.revma.ihrhls.com/zc3391", logo: "https://www.spin1038.com/assets/images/logo.png", genre: "Urban Hits" }
+  { 
+    id: "rte-1", 
+    name: "RTÉ Radio 1", 
+    stream: "https://ie-live-mp3-128.vcdn.space/rte-radio1", 
+    logo: "https://www.rte.ie/assets/static/images/logo-rte-radio1.png", 
+    genre: "Talk / News" 
+  },
+  { 
+    id: "rte-2fm", 
+    name: "RTÉ 2FM", 
+    stream: "https://ie-live-mp3-128.vcdn.space/rte-2fm", 
+    logo: "https://www.rte.ie/assets/static/images/logo-rte-2fm.png", 
+    genre: "Pop / Chart" 
+  },
+  { 
+    id: "rte-lyric", 
+    name: "RTÉ Lyric FM", 
+    stream: "https://ie-live-mp3-128.vcdn.space/rte-lyricfm", 
+    logo: "https://www.rte.ie/assets/static/images/logo-rte-lyric.png", 
+    genre: "Classical / Arts" 
+  },
+  { 
+    id: "rte-raidio-na-gaeltachta", 
+    name: "RTÉ RnaG", 
+    stream: "https://ie-live-mp3-128.vcdn.space/rte-rnag", 
+    logo: "https://www.rte.ie/assets/static/images/logo-rte-rnag.png", 
+    genre: "Irish Language" 
+  },
+  { 
+    id: "today-fm", 
+    name: "Today FM", 
+    stream: "https://stream.revma.ihrhls.com/zc3393/stream", 
+    logo: "https://www.todayfm.com/assets/images/logo.png", 
+    genre: "Rock / Indie" 
+  },
+  { 
+    id: "newstalk", 
+    name: "Newstalk", 
+    stream: "https://stream.revma.ihrhls.com/zc3389/stream", 
+    logo: "https://www.newstalk.com/assets/images/logo.png", 
+    genre: "National Talk" 
+  },
+  { 
+    id: "spin-1038", 
+    name: "SPIN 1038", 
+    stream: "https://stream.revma.ihrhls.com/zc3391/stream", 
+    logo: "https://www.spin1038.com/assets/images/logo.png", 
+    genre: "Urban Hits" 
+  },
+  { 
+    id: "spin-southwest", 
+    name: "SPIN South West", 
+    stream: "https://stream.revma.ihrhls.com/zc4145/stream", 
+    logo: "https://www.spinsouthwest.com/assets/images/logo.png", 
+    genre: "Urban Hits" 
+  },
+  { 
+    id: "98fm", 
+    name: "98FM", 
+    stream: "https://stream.revma.ihrhls.com/zc3387/stream", 
+    logo: "https://www.98fm.com/assets/images/logo.png", 
+    genre: "Dublin Hits" 
+  },
+  { 
+    id: "fm104", 
+    name: "FM104", 
+    stream: "https://wms.sharp-stream.com/live/fm104.mp3", 
+    logo: "https://www.fm104.ie/assets/images/logo.png", 
+    genre: "Dublin Chart" 
+  },
+  { 
+    id: "q102", 
+    name: "Dublin's Q102", 
+    stream: "https://wms.sharp-stream.com/live/q102.mp3", 
+    logo: "https://www.q102.ie/assets/images/logo.png", 
+    genre: "Classic Hits" 
+  },
+  { 
+    id: "classic-hits", 
+    name: "Ireland's Classic Hits", 
+    stream: "https://stream.classichits.ie/live/mp3/icecast.audio", 
+    logo: "https://www.classichits.ie/assets/images/logo.png", 
+    genre: "80s / 90s / 00s" 
+  },
+  { 
+    id: "radio-nova", 
+    name: "Radio Nova", 
+    stream: "https://stream.radionova.ie/live/mp3/icecast.audio", 
+    logo: "https://www.nova.ie/assets/images/logo.png", 
+    genre: "Guitar Rock" 
+  },
+  { 
+    id: "corks-96fm", 
+    name: "Cork's 96FM", 
+    stream: "https://wms.sharp-stream.com/live/96fm.mp3", 
+    logo: "https://www.96fm.ie/assets/images/logo.png", 
+    genre: "Cork Adult Pop" 
+  },
+  { 
+    id: "corks-redfm", 
+    name: "Cork's RedFM", 
+    stream: "https://wms.sharp-stream.com/live/redfm.mp3", 
+    logo: "https://www.redfm.ie/assets/images/logo.png", 
+    genre: "Cork Pop / Chat" 
+  },
+  { 
+    id: "galway-bay-fm", 
+    name: "Galway Bay FM", 
+    stream: "https://stream.galwaybayfm.ie/live", 
+    logo: "https://galwaybayfm.ie/wp-content/uploads/2018/02/gbfm-logo.png", 
+    genre: "Galway Local" 
+  },
+  { 
+    id: "wlrfm", 
+    name: "WLR FM", 
+    stream: "https://stream.wlrfm.com/live", 
+    logo: "https://www.wlrfm.com/assets/images/logo.png", 
+    genre: "Waterford Local" 
+  },
+  { 
+    id: "live95", 
+    name: "Limerick's Live 95", 
+    stream: "https://wms.sharp-stream.com/live/live95.mp3", 
+    logo: "https://www.live95fm.ie/assets/images/logo.png", 
+    genre: "Limerick Local" 
+  },
+  { 
+    id: "kclr96fm", 
+    name: "KCLR 96FM", 
+    stream: "https://kclr.stream.publicradio.ie/kclr_mp3", 
+    logo: "https://kclr96fm.com/wp-content/uploads/2021/04/kclr-logo.png", 
+    genre: "Carlow / Kilkenny" 
+  },
+  { 
+    id: "midlands-103", 
+    name: "Midlands 103", 
+    stream: "https://midlands103.stream.publicradio.ie/midlands_mp3", 
+    logo: "https://www.midlands103.com/assets/images/logo.png", 
+    genre: "Laois / Offaly / Westmeath" 
+  }
 ];
 
 class AudioPipelineManager {
@@ -253,7 +388,8 @@ class AudioPipelineManager {
 
   registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+      // Changed pathing to explicitly support local and relative subfolder environments
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
     }
   }
 }
