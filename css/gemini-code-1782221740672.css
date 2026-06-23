@@ -1,0 +1,80 @@
+:root {
+    --bg-primary: #111111;
+    --bg-surface: #1e1e1e;
+    --accent: #4caf50;
+    --text-main: #ffffff;
+    --text-muted: #aaaaaa;
+}
+
+body {
+    margin: 0; font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg-primary); color: var(--text-main); padding-bottom: 90px;
+}
+
+header { padding: 1.5rem; text-align: center; background: #000; position: relative; }
+header h1 { margin: 0 0 1rem 0; color: var(--accent); }
+input[type="search"] {
+    width: 100%; max-width: 500px; padding: 0.75rem; border: none;
+    border-radius: 25px; background: #2a2a2a; color: #fff; box-sizing: border-box;
+}
+
+.backup-controls { margin-top: 0.75rem; display: flex; justify-content: center; gap: 0.5rem; }
+.backup-controls button { background: #222; border: 1px solid #444; color: #fff; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+
+nav { display: flex; border-bottom: 1px solid #222; }
+nav button { flex: 1; padding: 1rem; background: none; border: none; color: var(--text-muted); font-size: 1rem; cursor: pointer; }
+nav button.active { color: var(--accent); border-bottom: 3px solid var(--accent); font-weight: bold; }
+
+#stations { padding: 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+
+.station-card { background: var(--bg-surface); border-radius: 12px; padding: 1rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid transparent; transition: border 0.3s; }
+.card-active-playing { border-color: var(--accent); background: #142515; }
+
+.logo-container { position: relative; width: 70px; height: 70px; margin: 0 auto 0.5rem auto; }
+.logo-container img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+
+.eq-animation { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; gap:3px; border-radius: 8px; }
+.eq-animation span { width: 4px; height: 15px; background: var(--accent); animation: bounce 0.8s ease infinite alternate; }
+.eq-animation span:nth-child(2) { animation-delay: 0.2s; }
+.eq-animation span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0% { transform: scaleY(0.3); } 100% { transform: scaleY(1.5); } }
+
+.card-clickable h3 { margin: 0.5rem 0 0 0; font-size: 1rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+.card-genre { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.25rem; }
+.card-actions { display: flex; justify-content: space-around; margin-top: 1rem; border-top: 1px solid #2d2d2d; padding-top: 0.5rem; }
+.card-actions button { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+.card-actions .fav-btn { color: #ffca28; }
+
+.floating-btn { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; background: var(--accent); color: white; border: none; border-radius: 50%; font-size: 2rem; font-weight: bold; cursor: pointer; z-index: 900; box-shadow: 0 4px 12px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+
+#playerOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+#overlayBlurBg { position: absolute; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); background-size: cover; background-position: center; filter: blur(30px) brightness(0.3); z-index: -1; transform: scale(1.1); transition: background-image 0.5s ease; }
+
+.close-btn { position: absolute; top: 20px; right: 25px; font-size: 2.5rem; background: none; border: none; color: #fff; cursor: pointer; z-index: 1001; }
+.overlay-content { text-align: center; width: 85%; max-width: 400px; z-index: 1001; }
+#overlayLogo { width: 180px; height: 180px; object-fit: contain; margin-bottom: 1.5rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+#overlayTitle { font-size: 1.8rem; margin: 0 0 0.5rem 0; }
+#overlayTrack { font-size: 1.1rem; color: var(--accent); margin: 0 0 1.5rem 0; min-height: 1.5rem; }
+
+.sleep-timer-section { margin-bottom: 2.5rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.4); padding: 0.5rem 1rem; border-radius: 20px; display: inline-flex; }
+.sleep-timer-section label { font-size: 0.85rem; color: var(--text-muted); }
+.sleep-timer-section select { background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 0.2rem; }
+#sleepCountdown { font-size: 0.85rem; color: #ffca28; font-weight: bold; }
+
+.play-toggle-btn { width: 80px; height: 80px; border-radius: 50%; border: none; background: var(--accent); color: white; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+
+.spinner { width: 28px; height: 28px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.modal { position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:2000; display:flex; justify-content:center; align-items:center; }
+.modal-content { background: var(--bg-surface); padding: 2rem; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+.modal-content h3 { margin-top: 0; color: var(--accent); }
+.modal-content label { display: block; margin-bottom: 0.8rem; color: var(--text-muted); font-size: 0.9rem; }
+.modal-content input { width: 100%; padding: 0.6rem; margin-top: 0.25rem; background: #2d2d2d; border: 1px solid #444; color: #fff; border-radius: 6px; box-sizing: border-box; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; }
+.modal-actions button { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+#cancelModalBtn { background: #333; color: #fff; }
+#saveModalBtn { background: var(--accent); color: white; }
+
+.hidden { display: none !important; }
+.no-results { grid-column: 1 / -1; text-align: center; color: #666; margin-top: 4rem; font-size: 1.1rem; }
