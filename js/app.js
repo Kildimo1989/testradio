@@ -138,7 +138,7 @@ window.openPlayer = function(id) {
         player.src = target.url;
         player.load();
     }
-    player.play().catch(() => console.log("Stream pending UI activation interaction loop context."));
+    player.play().catch(() => console.log("User gesture connection resolved."));
     
     updateMediaMetadata(target.name, target.logo, "Live Broadcast");
     renderStations(); 
@@ -180,7 +180,7 @@ function handleStreamError() {
         document.getElementById('overlayTrack').innerText = `Reconnecting (Attempt ${reconnectAttempts})...`;
         setTimeout(() => {
             player.load();
-            player.play().catch(() => console.log("Retrying core engine connection parameters."));
+            player.play().catch(() => console.log("Retrying core audio link interface."));
         }, reconnectAttempts * 2000); 
     } else if (currentStation && currentStation.backupUrl && !isUsingBackupUrl) {
         isUsingBackupUrl = true;
@@ -188,7 +188,7 @@ function handleStreamError() {
         document.getElementById('overlayTrack').innerText = "Switching to backup stream...";
         player.src = currentStation.backupUrl;
         player.load();
-        player.play().catch(e => console.error("Alternative route recovery failure profile:", e));
+        player.play().catch(e => console.error("Backup stream route failure:", e));
     } else {
         document.getElementById('overlayTrack').innerText = "Stream offline or unavailable.";
         updatePlaybackUI(false);
@@ -260,13 +260,13 @@ function importStationsJSON(e) {
                 renderStations();
                 alert("Station database restored successfully!");
             } else {
-                alert("Invalid configuration template properties.");
+                alert("Invalid template properties structure.");
             }
         } catch (err) {
-            alert("Error running initialization script profile elements.");
+            alert("Error running serialization engine script context.");
         }
     };
-    fileReader.readAsText(e.target.files[0]);
+    fileReader.readAsText(e.target.files);
 }
 
 function openAddModal() {
