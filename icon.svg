@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#1D9E75"/>
-  <circle cx="256" cy="300" r="36" fill="white"/>
-  <path d="M160 220 Q256 140 352 220" stroke="white" stroke-width="24" fill="none" stroke-linecap="round"/>
-  <path d="M120 180 Q256 80 392 180" stroke="white" stroke-width="24" fill="none" stroke-linecap="round" opacity="0.6"/>
-  <rect x="244" y="236" width="24" height="64" rx="4" fill="white"/>
+  <rect width="512" height="512" rx="100" fill="#1A56DB"/>
+  <circle cx="256" cy="210" r="42" fill="white"/>
+  <path d="M155 148 Q256 58 357 148" stroke="white" stroke-width="28" fill="none" stroke-linecap="round"/>
+  <path d="M110 103 Q256 -2 402 103" stroke="white" stroke-width="28" fill="none" stroke-linecap="round" opacity="0.55"/>
+  <line x1="256" y1="168" x2="256" y2="252" stroke="white" stroke-width="14" stroke-linecap="round"/>
+  <text x="256" y="355" text-anchor="middle" font-family="-apple-system,Arial,sans-serif" font-size="72" font-weight="800" fill="white">IRISH</text>
+  <text x="256" y="430" text-anchor="middle" font-family="-apple-system,Arial,sans-serif" font-size="50" font-weight="500" fill="rgba(255,255,255,0.82)">RADIO</text>
 </svg>

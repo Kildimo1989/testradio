@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A56DB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Irish Radio">
+<title>Irish Radio</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --blue:#1A56DB; --blue-dark:#1245b5; --blue-btn:#1A56DB;
+  --bg:#f0f4ff; --bg2:#ffffff; --surface:#e8efff; --surface2:#dce6ff;
+  --text:#0d1b40; --text2:#3d5a99; --text3:#8099cc;
+  --border:#cddaff; --radius:14px;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.hdr{background:#fff;border-bottom:1.5px solid var(--border);padding:calc(var(--safe-top)+11px) 16px 10px;flex-shrink:0;box-shadow:0 1px 8px rgba(26,86,219,.07)}
+.hdr-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.hdr-logo{width:36px;height:36px;border-radius:9px;overflow:hidden;flex-shrink:0;background:var(--blue)}
+.hdr-logo img{width:36px;height:36px;object-fit:contain}
+.hdr-title{flex:1}
+.hdr-title h1{font-size:18px;font-weight:700;color:var(--text)}
+.hdr-title p{font-size:11px;color:var(--text3);margin-top:1px}
+.hdr-gear{background:var(--surface);border:1.5px solid var(--border);color:var(--blue);font-size:18px;cursor:pointer;padding:6px 10px;border-radius:9px;line-height:1}
+.search-row{position:relative}
+.search-row svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text3);pointer-events:none}
+input[type=search]{width:100%;height:38px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;padding:0 12px 0 33px;outline:none}
+input[type=search]:focus{border-color:var(--blue);background:#fff}
+input[type=search]::placeholder{color:var(--text3)}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:1.5px solid var(--border);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:70px;padding:10px 3px;text-align:center;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;white-space:nowrap;transition:color .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* MINI PLAYER */
+.mini{background:#fff;border-bottom:1.5px solid var(--border);padding:8px 14px;display:none;align-items:center;gap:10px;flex-shrink:0;cursor:pointer}
+.mini.on{display:flex}
+.mini-logo{width:34px;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mini-logo img{width:34px;height:34px;object-fit:contain}
+.mini-info{flex:1;min-width:0}
+.mini-name{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-sub{font-size:11px;color:var(--text3)}
+.mini-dot{display:inline-block;width:7px;height:7px;background:var(--blue);border-radius:50%;margin-right:4px;animation:blink 1.3s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.mini-pp{width:38px;height:38px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(26,86,219,.3)}
+
+/* GRID */
+.grid-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:11px}
+.grid-wrap::-webkit-scrollbar{display:none}
+.cnt{font-size:11px;color:var(--text3);margin-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+@media(min-width:420px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,1fr)}}
+.sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);grid-column:1/-1;padding:8px 2px 2px}
+.card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:6px;position:relative;min-height:98px;transition:border-color .15s,box-shadow .15s}
+.card:active{background:var(--surface)}
+.card.now{border-color:var(--blue);box-shadow:0 2px 14px rgba(26,86,219,.15)}
+.c-logo{width:42px;height:42px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.c-logo img{width:42px;height:42px;object-fit:contain}
+.c-logo .fb{font-size:22px}
+.c-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-region{font-size:10px;color:var(--text3)}
+.c-fav{position:absolute;top:6px;right:6px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3);padding:3px}
+.c-fav.on{color:#f5a623}
+.c-live{position:absolute;bottom:7px;right:7px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px}
+.empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px;line-height:2}
+.empty .ei{display:block;font-size:34px;margin-bottom:6px}
+
+/* ── NOW PLAYING — matches Radio Wave reference screenshot ── */
+.np{display:none;position:fixed;inset:0;z-index:400;background:#f0f4ff;flex-direction:column;overflow:hidden}
+.np.on{display:flex}
+.np-topbar{display:flex;justify-content:space-between;align-items:center;padding:calc(var(--safe-top)+12px) 16px 10px;background:#fff;border-bottom:1.5px solid var(--border);flex-shrink:0}
+.np-back{background:none;border:none;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;padding:4px}
+.np-edit-btn{background:none;border:none;color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;padding:4px}
+.np-edit-btn span{font-size:18px}
+
+/* VINYL */
+.np-vinyl-section{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 30px;background:#f0f4ff}
+.vinyl-outer{position:relative;width:min(260px,72vw);height:min(260px,72vw)}
+.vinyl-disc{width:100%;height:100%;border-radius:50%;background:
+  radial-gradient(circle at 50% 50%,
+    #0a0a0a 0%,#1a1a1a 15%,#0d0d0d 15.5%,
+    #2a2a2a 30%,#111 30.5%,#222 45%,
+    #0d0d0d 45.5%,#1c1c1c 60%,#111 60.5%,
+    #282828 75%,#0a0a0a 75.5%,#1e1e1e 90%,#111 100%);
+  box-shadow:0 12px 50px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.2);
+  animation:vspin 5s linear infinite paused;position:relative}
+.vinyl-disc.playing{animation-play-state:running}
+@keyframes vspin{to{transform:rotate(360deg)}}
+.vinyl-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34%;height:34%;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid rgba(255,255,255,.2)}
+.vinyl-center img{width:100%;height:100%;object-fit:contain;border-radius:50%}
+.vinyl-center-fallback{color:#fff;font-size:min(18px,5vw);font-weight:700;text-align:center;padding:4px;line-height:1.2}
+
+/* STATION INFO */
+.np-info-section{background:#fff;padding:14px 20px 0;flex-shrink:0}
+.np-station-name{font-size:22px;font-weight:700;color:var(--text);margin-bottom:2px}
+.np-station-region{font-size:13px;color:var(--text3);margin-bottom:6px}
+.np-prog{font-size:14px;color:var(--text2);margin-bottom:14px;min-height:20px}
+
+/* ACTION ROW */
+.np-actions{display:flex;gap:8px;padding:0 20px 12px;background:#fff;flex-shrink:0}
+.np-act{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
+.np-act.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.np-act:active{opacity:.8}
+
+/* BUFFERING BAR */
+.np-buf-row{padding:8px 20px;background:#fff;flex-shrink:0;border-top:1px solid var(--border)}
+.np-buf-label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3);margin-bottom:5px}
+.np-buf-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#f5a623;margin-right:5px}
+.np-buf-dot.live{background:#22c55e}
+.np-buf-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.np-buf-fill{height:100%;background:linear-gradient(90deg,#f5a623,#f59f0b);border-radius:2px;width:0%;transition:width .5s}
+.np-buf-fill.live{background:linear-gradient(90deg,var(--blue),#3b82f6);width:100%}
+.np-reconnect{font-size:11px;color:var(--text3);padding:4px 20px;background:#fff;flex-shrink:0;min-height:18px}
+
+/* CONTROLS */
+.np-controls{display:flex;align-items:center;justify-content:center;gap:22px;padding:14px 20px 10px;background:#fff;flex-shrink:0}
+.np-skip{width:52px;height:52px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(26,86,219,.3)}
+.np-play-big{width:66px;height:66px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(26,86,219,.4)}
+.np-skip:active,.np-play-big:active{background:var(--blue-dark)}
+
+/* VOL */
+.np-vol-row{display:flex;align-items:center;gap:10px;padding:6px 20px calc(var(--safe-bottom)+10px);background:#fff;flex-shrink:0}
+.np-vol-row span{font-size:16px;flex-shrink:0}
+input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--blue);border-radius:50%;box-shadow:0 2px 6px rgba(26,86,219,.3)}
+.np-vol-pct{font-size:11px;color:var(--text3);min-width:30px;text-align:right;flex-shrink:0}
+
+/* SETTINGS */
+.settings{display:none;position:fixed;inset:0;z-index:500;align-items:flex-end}
+.settings.on{display:flex}
+.s-scrim{position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.s-sheet{background:#fff;width:100%;max-height:88vh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;position:relative;z-index:1;box-shadow:0 -4px 30px rgba(26,86,219,.12)}
+.s-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1.5px solid var(--border);flex-shrink:0}
+.s-hdr h2{font-size:16px;font-weight:700;color:var(--text)}
+.s-hdr-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:13px;padding:5px 12px;border-radius:8px;cursor:pointer}
+.s-body{overflow-y:auto;padding:14px 16px;flex:1}
+.s-body::-webkit-scrollbar{display:none}
+.s-note{font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6;background:var(--surface);padding:10px 12px;border-radius:8px;border-left:3px solid var(--blue)}
+.s-row{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.s-logo{width:32px;height:32px;border-radius:7px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.s-logo img{width:32px;height:32px;object-fit:contain}
+.s-name{flex:1;font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-ebtn{background:var(--blue);border:none;color:#fff;font-size:12px;padding:5px 11px;border-radius:7px;cursor:pointer;font-weight:600;flex-shrink:0}
+
+/* EDIT */
+.edit-modal{display:none;position:fixed;inset:0;z-index:600;align-items:center;justify-content:center;padding:18px}
+.edit-modal.on{display:flex}
+.edit-scrim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.edit-box{background:#fff;border-radius:16px;padding:20px;width:100%;max-width:420px;position:relative;z-index:1;max-height:82vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.edit-box h3{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.ef{margin-bottom:12px}
+.ef label{display:block;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.ef input{width:100%;padding:9px 11px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none}
+.ef input:focus{border-color:var(--blue);background:#fff}
+.ef input::placeholder{color:var(--text3)}
+.ef input[type=file]{padding:5px 8px;font-size:12px}
+.ef-hint{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.4}
+.edit-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{padding:9px 14px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-ok{background:var(--blue);color:#fff;flex:1}
+.btn-reset{background:var(--surface);color:var(--blue);border:1.5px solid var(--blue)}
+.btn-cancel{background:var(--surface);color:var(--text2);border:1.5px solid var(--border)}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-bottom)+80px);left:50%;transform:translateX(-50%) translateY(16px);background:var(--blue);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:900;white-space:nowrap;box-shadow:0 4px 16px rgba(26,86,219,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.safe-bot{height:var(--safe-bottom);background:#fff;flex-shrink:0}
+audio{display:none}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-row">
+    <div class="hdr-logo"><img src="icon.svg" alt="Irish Radio"></div>
+    <div class="hdr-title"><h1>Irish Radio</h1><p>Live Irish stations</p></div>
+    <button class="hdr-gear" onclick="openSettings()">⚙️ Settings</button>
+  </div>
+  <div class="search-row">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="srch" placeholder="Search stations or region…" oninput="doFilter()">
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" id="t-all"      onclick="switchTab('all')">All</div>
+  <div class="tab"        id="t-favs"     onclick="switchTab('favs')">⭐ Favs</div>
+  <div class="tab"        id="t-recent"   onclick="switchTab('recent')">🕐 Recent</div>
+  <div class="tab"        id="t-national" onclick="switchTab('national')">National</div>
+  <div class="tab"        id="t-dublin"   onclick="switchTab('dublin')">Dublin</div>
+  <div class="tab"        id="t-regional" onclick="switchTab('regional')">Regional</div>
+</div>
+
+<!-- MINI PLAYER -->
+<div class="mini" id="mini" onclick="openNP()">
+  <div class="mini-logo" id="miniLogo"><span style="font-size:18px">📻</span></div>
+  <div class="mini-info">
+    <div class="mini-name" id="miniName">Not playing</div>
+    <div class="mini-sub"  id="miniSub"><span class="mini-dot" id="miniDot"></span>Tap to open player</div>
+  </div>
+  <button class="mini-pp" id="miniPP" onclick="event.stopPropagation();togglePlay()">▶</button>
+</div>
+
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="cnt" id="cnt"></div>
+  <div class="grid" id="grid"></div>
+</div>
+<div class="safe-bot"></div>
+
+<!-- NOW PLAYING — Radio Wave style -->
+<div class="np" id="np">
+
+  <!-- TOP BAR: Minimize left, Edit right -->
+  <div class="np-topbar">
+    <button class="np-back" onclick="closeNP()">↓ Minimize</button>
+    <button class="np-edit-btn" id="npEditBtn" onclick="editCurrentStation()"><span>⚙️</span> Edit</button>
+  </div>
+
+  <!-- VINYL RECORD -->
+  <div class="np-vinyl-section">
+    <div class="vinyl-outer">
+      <div class="vinyl-disc" id="npVinyl">
+        <div class="vinyl-center" id="npLabel">
+          <div class="vinyl-center-fallback" id="npLabelFallback">📻</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION INFO -->
+  <div class="np-info-section">
+    <div class="np-station-name" id="npName">—</div>
+    <div class="np-station-region" id="npRegion"></div>
+    <div class="np-prog" id="npProg">Live Broadcast</div>
+  </div>
+
+  <!-- ACTIONS: Save / Share / Web -->
+  <div class="np-actions">
+    <button class="np-act primary" onclick="toggleFavNP()"><span id="npSaveIcon">☆</span> Save</button>
+    <button class="np-act" onclick="shareStation()">🔗 Share</button>
+    <button class="np-act" onclick="openStationWeb()">🌐 Web</button>
+  </div>
+
+  <!-- BUFFERING BAR -->
+  <div class="np-buf-row">
+    <div class="np-buf-label">
+      <span><span class="np-buf-dot" id="bufDot"></span><span id="bufLabel">Connecting…</span></span>
+      <span id="npStat"></span>
+    </div>
+    <div class="np-buf-bar"><div class="np-buf-fill" id="bufFill"></div></div>
+  </div>
+  <div class="np-reconnect" id="npRecon"></div>
+
+  <!-- CONTROLS -->
+  <div class="np-controls">
+    <button class="np-skip" onclick="skipStation(-1)">◀</button>
+    <button class="np-play-big" id="npPlay" onclick="togglePlay()">▶</button>
+    <button class="np-skip" onclick="skipStation(1)">▶</button>
+  </div>
+
+  <!-- VOLUME -->
+  <div class="np-vol-row">
+    <span>🔈</span>
+    <input type="range" id="vol" min="0" max="1" step="0.02" value="0.85" oninput="setVol(this.value)">
+    <span class="np-vol-pct" id="volPct">85%</span>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings" id="settings">
+  <div class="s-scrim" onclick="closeSettings()"></div>
+  <div class="s-sheet">
+    <div class="s-hdr">
+      <h2>⚙️ Station Settings</h2>
+      <button class="s-hdr-btn" onclick="closeSettings()">✕ Close</button>
+    </div>
+    <div class="s-body">
+      <p class="s-note">Tap <b>Edit</b> to update a station's stream URL or logo. Find working streams at <b>ieradio.org</b> or <b>radiofeeds.co.uk/irish.asp</b></p>
+      <div id="sList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-modal" id="editModal">
+  <div class="edit-scrim" onclick="closeEdit()"></div>
+  <div class="edit-box">
+    <h3 id="editTitle">Edit Station</h3>
+    <div class="ef"><label>Station Name</label><input id="eName" readonly></div>
+    <div class="ef">
+      <label>Stream URL</label>
+      <input id="eStream" placeholder="https://…/stream.mp3">
+      <div class="ef-hint">Direct MP3/AAC stream. Find URLs at ieradio.org</div>
+    </div>
+    <div class="ef"><label>Logo URL</label><input id="eLogoUrl" placeholder="https://…/logo.png"></div>
+    <div class="ef"><label>Upload Logo from phone</label><input type="file" id="eLogoFile" accept="image/*"></div>
+    <div class="edit-btns">
+      <button class="btn btn-reset"  onclick="resetSt()">↺ Reset</button>
+      <button class="btn btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn btn-ok"     onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="player"></audio>
+
+<script>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+const DEF=[
+  {id:'rte1',   name:'RTÉ Radio 1',              cat:'national',region:'National',   stream:'https://icecast.rte.ie/radio1',              logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-radio-1.png',                  web:'https://rte.ie/radio1'},
+  {id:'rte2fm', name:'RTÉ 2FM',                  cat:'national',region:'National',   stream:'https://icecast.rte.ie/2fm',                 logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-2fm.png',                       web:'https://rte.ie/2fm'},
+  {id:'lyric',  name:'RTÉ Lyric FM',             cat:'national',region:'National',   stream:'https://icecast.rte.ie/lyric',               logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-lyric-fm.png',                  web:'https://rte.ie/lyricfm'},
+  {id:'gold',   name:'RTÉ Gold',                 cat:'national',region:'National',   stream:'https://icecast.rte.ie/gold',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-gold.png',                      web:'https://rte.ie/gold'},
+  {id:'rnag',   name:'RTÉ Raidió na Gaeltachta', cat:'national',region:'National',   stream:'https://icecast.rte.ie/rnag',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-raidio-na-gaeltachta.png',      web:'https://rte.ie/rnag'},
+  {id:'pulse',  name:'RTÉ Pulse',                cat:'national',region:'National',   stream:'https://icecast.rte.ie/pulse',               logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-radio-1.png',                   web:'https://rte.ie'},
+  {id:'2xm',    name:'RTÉ 2XM',                  cat:'national',region:'National',   stream:'https://icecast.rte.ie/2xm',                 logo:'https://cdn.instant.audio/images/logos/ieradio-org/rte-2fm.png',                       web:'https://rte.ie/2xm'},
+  {id:'ntk',    name:'Newstalk',                 cat:'national',region:'National',   stream:'https://stream.newstalk.com/newstalk',       logo:'https://cdn.instant.audio/images/logos/ieradio-org/newstalk.png',                     web:'https://newstalk.com'},
+  {id:'tdy',    name:'Today FM',                 cat:'national',region:'National',   stream:'https://stream.todayfm.com/todayfm',         logo:'https://cdn.instant.audio/images/logos/ieradio-org/today-fm.png',                     web:'https://todayfm.com'},
+  {id:'clh',    name:"Ireland's Classic Hits",   cat:'national',region:'National',   stream:'https://stream.classichits.ie/classichits',  logo:'https://cdn.instant.audio/images/logos/ieradio-org/classic-hits.png',                 web:'https://classichits.ie'},
+  {id:'spi',    name:'Spirit Radio',             cat:'national',region:'National',   stream:'https://dreamsiteradiocp2.com:8014/stream',  logo:'',                                                                                      web:'https://spiritradio.ie'},
+  {id:'ucb',    name:'UCB Ireland',              cat:'national',region:'National',   stream:'https://stream.btsstream.com:18022/ucbireland.mp3',logo:'https://cdn.instant.audio/images/logos/ieradio-org/ucb-dublin.png',              web:'https://ucbireland.ie'},
+  {id:'chr',    name:'Christmas FM',             cat:'national',region:'National',   stream:'https://stream.christmasfm.com/christmasfm',logo:'https://cdn.instant.audio/images/logos/ieradio-org/christmas.png',                     web:'https://christmasfm.com'},
+  {id:'98f',    name:'98FM',                     cat:'dublin',  region:'Dublin',     stream:'https://stream.98fm.ie/98fm',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/98fm.png',                         web:'https://98fm.com'},
+  {id:'fm104',  name:'FM104',                    cat:'dublin',  region:'Dublin',     stream:'https://stream.fm104.ie/fm104',              logo:'https://cdn.instant.audio/images/logos/ieradio-org/fm104.png',                        web:'https://fm104.ie'},
+  {id:'q102',   name:"Dublin's Q102",            cat:'dublin',  region:'Dublin',     stream:'https://stream.q102.ie/q102',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/dublin-s-q-102-fm.png',            web:'https://q102.ie'},
+  {id:'nova',   name:'Radio Nova',               cat:'dublin',  region:'Dublin',     stream:'https://stream.radianova.ie/nova',           logo:'https://cdn.instant.audio/images/logos/ieradio-org/radio-nova.png',                   web:'https://nova.ie'},
+  {id:'sp1038', name:'SPIN 1038',                cat:'dublin',  region:'Dublin',     stream:'https://stream.spin1038.ie/spin1038',        logo:'https://cdn.instant.audio/images/logos/ieradio-org/spin-1038.png',                    web:'https://spin1038.com'},
+  {id:'sun',    name:'Sunshine 106.8',           cat:'dublin',  region:'Dublin',     stream:'https://stream.sunshineradio.ie/sunshine',   logo:'https://cdn.instant.audio/images/logos/ieradio-org/sunshine.png',                    web:'https://sunshine.ie'},
+  {id:'dcfm',   name:'Dublin City FM',           cat:'dublin',  region:'Dublin',     stream:'https://stream.dublincityfm.ie/dublincity',  logo:'https://cdn.instant.audio/images/logos/ieradio-org/103-2-dublin-city-fm.png',         web:'https://dublincityfm.ie'},
+  {id:'all80s', name:'All 80s Jukebox',          cat:'dublin',  region:'Dublin',     stream:'https://stream.all80s.ie/all80s',            logo:'https://cdn.instant.audio/images/logos/ieradio-org/all-80s.png',                     web:''},
+  {id:'96fm',   name:"Cork's 96FM",              cat:'regional',region:'Cork',       stream:'https://stream.96fm.ie/96fm',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/corks-fm.png',                    web:'https://96fm.com'},
+  {id:'red',    name:'Red FM',                   cat:'regional',region:'Cork',       stream:'https://stream.redfm.ie/redfm',              logo:'https://cdn.instant.audio/images/logos/ieradio-org/red-fm.png',                      web:'https://redfm.ie'},
+  {id:'c103',   name:'C103',                     cat:'regional',region:'Cork',       stream:'https://stream.c103.ie/c103',                logo:'https://cdn.instant.audio/images/logos/ieradio-org/c103-west.png',                   web:'https://c103.ie'},
+  {id:'kry',    name:'Radio Kerry',              cat:'regional',region:'Kerry',      stream:'https://stream.radiokerry.ie/radiokerry',    logo:'https://cdn.instant.audio/images/logos/ieradio-org/radio-kerry.png',                  web:'https://radiokerry.ie'},
+  {id:'clr',    name:'Clare FM',                 cat:'regional',region:'Clare',      stream:'https://stream.clarefm.ie/clarefm',          logo:'https://cdn.instant.audio/images/logos/ieradio-org/clare-fm.png',                    web:'https://clarefm.ie'},
+  {id:'l95',    name:'Live 95 FM',               cat:'regional',region:'Limerick',   stream:'https://stream.live95.ie/live95',            logo:'https://cdn.instant.audio/images/logos/ieradio-org/live-95-fm.png',                  web:'https://live95.ie'},
+  {id:'tip',    name:'Tipp FM',                  cat:'regional',region:'Tipperary',  stream:'https://stream.tippfm.ie/tippfm',            logo:'',                                                                                    web:'https://tippfm.ie'},
+  {id:'wlr',    name:'WLR FM',                   cat:'regional',region:'Waterford',  stream:'https://stream.wlrfm.ie/wlrfm',              logo:'https://cdn.instant.audio/images/logos/ieradio-org/wlr-fm.png',                      web:'https://wlrfm.com'},
+  {id:'bet',    name:'Beat 102-103',             cat:'regional',region:'South East', stream:'https://stream.beat102103.ie/beat',          logo:'https://cdn.instant.audio/images/logos/ieradio-org/beat-102-103.png',                web:'https://beat102103.com'},
+  {id:'ser',    name:'South East Radio',         cat:'regional',region:'Wexford',    stream:'https://stream.southeastradio.ie/ser',       logo:'https://cdn.instant.audio/images/logos/ieradio-org/south-east-radio.png',            web:'https://southeastradio.ie'},
+  {id:'kclr',   name:'KCLR 96FM',               cat:'regional',region:'Kilkenny',   stream:'https://stream.kclr96fm.ie/kclr',            logo:'https://cdn.instant.audio/images/logos/ieradio-org/kclr-kilkenny.png',               web:'https://kclr96fm.com'},
+  {id:'ecfm',   name:'East Coast FM',            cat:'regional',region:'Wicklow',    stream:'https://stream.eastcoastfm.ie/eastcoast',    logo:'https://cdn.instant.audio/images/logos/ieradio-org/east-coast-fm.png',               web:'https://eastcoastfm.ie'},
+  {id:'kfm',    name:'Kfm Radio',               cat:'regional',region:'Kildare',    stream:'https://stream.kfm.ie/kfm',                 logo:'https://cdn.instant.audio/images/logos/ieradio-org/kfm-radio.png',                   web:'https://kfmradio.com'},
+  {id:'lmfm',   name:'LMFM',                    cat:'regional',region:'Louth/Meath',stream:'https://stream.lmfm.ie/lmfm',               logo:'https://cdn.instant.audio/images/logos/ieradio-org/louth-meath-fm.png',              web:'https://lmfm.ie'},
+  {id:'mdl103', name:'Midlands 103',            cat:'regional',region:'Midlands',   stream:'https://stream.midlands103.ie/midlands103',  logo:'https://cdn.instant.audio/images/logos/ieradio-org/midlands.png',                    web:'https://midlands103.com'},
+  {id:'spsw',   name:'SPIN South West',         cat:'regional',region:'Munster',    stream:'https://stream.spinsouthwest.ie/spinsw',     logo:'https://cdn.instant.audio/images/logos/ieradio-org/spin-south-west.png',             web:'https://spinsouthwest.com'},
+  {id:'gbfm',   name:'Galway Bay FM',           cat:'regional',region:'Galway',     stream:'https://stream.galwaybay.ie/galwaybay',      logo:'https://cdn.instant.audio/images/logos/ieradio-org/bay-fm.png',                     web:'https://galwaybayfm.ie'},
+  {id:'mwr',    name:'MidWest Radio',           cat:'regional',region:'Mayo',       stream:'https://stream.midwestradio.ie/midwest',     logo:'https://cdn.instant.audio/images/logos/ieradio-org/midwest-radio-fm.png',            web:'https://midwestradio.ie'},
+  {id:'ocn',    name:'Ocean FM',                cat:'regional',region:'Sligo',      stream:'https://stream.oceanfm.ie/oceanfm',          logo:'https://cdn.instant.audio/images/logos/ieradio-org/ocean-fm.png',                   web:'https://oceanfm.ie'},
+  {id:'shn',    name:'Shannonside FM',          cat:'regional',region:'Roscommon',  stream:'https://stream.shannonside.ie/shannonside',  logo:'https://cdn.instant.audio/images/logos/ieradio-org/radio-shannonside.png',           web:'https://shannonside.ie'},
+  {id:'irdw',   name:'iRadio West & NW',        cat:'regional',region:'West',       stream:'https://stream.iradio.ie/iradio',            logo:'https://cdn.instant.audio/images/logos/ieradio-org/iradio-northwest.png',            web:'https://iradio.ie'},
+  {id:'hig',    name:'Highland Radio',          cat:'regional',region:'Donegal',    stream:'https://stream.highlandradio.ie/highland',   logo:'https://cdn.instant.audio/images/logos/ieradio-org/highland-radio.png',              web:'https://highlandradio.ie'},
+  {id:'nts',    name:'Northern Sound',          cat:'regional',region:'Cavan/Monaghan',stream:'https://stream.northernsound.ie/northernsound',logo:'',                                                                               web:'https://northernsound.ie'},
+];
+
+const RORD=['National','Dublin','Cork','Kerry','Clare','Limerick','Tipperary','Waterford','South East','Wexford','Kilkenny','Wicklow','Kildare','Louth/Meath','Midlands','Munster','Galway','Mayo','Sligo','Roscommon','West','Donegal','Cavan/Monaghan'];
+
+let stations=JSON.parse(localStorage.getItem('ier-v6')||'null')||JSON.parse(JSON.stringify(DEF));
+let favs=JSON.parse(localStorage.getItem('ier-favs')||'[]');
+let recent=JSON.parse(localStorage.getItem('ier-recent')||'[]');
+let curIdx=-1,curTab='all',playing=false,editIdx=null;
+let reTimer=null,reCount=0;
+const player=document.getElementById('player');
+
+// AUDIO
+player.addEventListener('playing',()=>{
+  playing=true; reCount=0; clearTimeout(reTimer);
+  setPlayUI(true); setBuf(true,'Live'); setMini(true);
+});
+player.addEventListener('pause',  ()=>{ playing=false; setPlayUI(false); setBuf(false,'Paused'); setMini(false); });
+player.addEventListener('waiting',()=>setBuf(false,'Buffering…'));
+player.addEventListener('stalled',()=>{ setBuf(false,'Stalled…'); doRecon(); });
+player.addEventListener('error',  ()=>{ setBuf(false,'Error…'); doRecon(); });
+player.addEventListener('ended',  ()=>doRecon());
+
+function doRecon(){
+  if(curIdx<0) return;
+  clearTimeout(reTimer); reCount++;
+  const d=Math.min(reCount*4,30);
+  document.getElementById('npRecon').textContent=`Reconnect ${reCount} in ${d}s…`;
+  reTimer=setTimeout(()=>{ document.getElementById('npRecon').textContent=''; startPlay(curIdx); },d*1000);
+}
+
+function save()      { localStorage.setItem('ier-v6',   JSON.stringify(stations)); }
+function saveFavs()  { localStorage.setItem('ier-favs', JSON.stringify(favs)); }
+function saveRecent(){ localStorage.setItem('ier-recent',JSON.stringify(recent)); }
+function isFav(id)   { return favs.includes(id); }
+function addRecent(id){ recent=[id,...recent.filter(r=>r!==id)].slice(0,20); saveRecent(); }
+
+function startPlay(idx){
+  curIdx=idx; const s=stations[idx];
+  clearTimeout(reTimer);
+  player.src=s.stream; player.volume=parseFloat(document.getElementById('vol').value);
+  player.load(); player.play().catch(()=>setBuf(false,'Tap ▶ to play'));
+  addRecent(s.id);
+  if('mediaSession' in navigator){
+    navigator.mediaSession.metadata=new MediaMetadata({
+      title:s.name,artist:'Irish Radio',album:s.region,
+      artwork:s.logo?[{src:s.logo,sizes:'512x512',type:'image/png'}]:[]
+    });
+    navigator.mediaSession.setActionHandler('play',         ()=>player.play());
+    navigator.mediaSession.setActionHandler('pause',        ()=>player.pause());
+    navigator.mediaSession.setActionHandler('stop',         ()=>player.pause());
+    navigator.mediaSession.setActionHandler('previoustrack',()=>skipStation(-1));
+    navigator.mediaSession.setActionHandler('nexttrack',    ()=>skipStation(1));
+  }
+  updateNPUI(s);
+  document.getElementById('mini').className='mini on';
+  render(getList());
+}
+
+function togglePlay(){ if(curIdx<0) return; if(playing) player.pause(); else player.play().catch(()=>{}); }
+function skipStation(d){
+  const list=getAllFiltered(); if(!list.length) return;
+  const ci=list.findIndex(s=>s.id===(stations[curIdx]||{}).id);
+  const ni=((ci<0?0:ci)+d+list.length)%list.length;
+  startPlay(stations.indexOf(list[ni]));
+}
+function setVol(v){ player.volume=parseFloat(v); document.getElementById('volPct').textContent=Math.round(v*100)+'%'; }
+
+function setPlayUI(on){
+  document.getElementById('npPlay').textContent=on?'⏸':'▶';
+  document.getElementById('miniPP').textContent=on?'⏸':'▶';
+  document.getElementById('npVinyl').className=on?'vinyl-disc playing':'vinyl-disc';
+}
+
+function setBuf(isLive,label){
+  const dot=document.getElementById('bufDot');
+  const lbl=document.getElementById('bufLabel');
+  const fill=document.getElementById('bufFill');
+  dot.className='np-buf-dot'+(isLive?' live':'');
+  lbl.textContent=label;
+  fill.className='np-buf-fill'+(isLive?' live':'');
+  if(!isLive){ fill.style.width='35%'; setTimeout(()=>{ fill.style.width='70%'; },400); }
+}
+
+function setMini(on){
+  if(curIdx<0) return;
+  const s=stations[curIdx];
+  document.getElementById('miniName').textContent=s.name;
+  document.getElementById('miniSub').innerHTML=(on?'<span class="mini-dot"></span>● Live — tap to open':'⏸ Paused — tap to open');
+  const ml=document.getElementById('miniLogo');
+  if(s.logo){ ml.innerHTML=`<img src="${s.logo}" alt="" style="width:34px;height:34px;object-fit:contain" onerror="this.outerHTML='<span style=font-size:18px>📻</span>'">`; }
+  else { ml.innerHTML='<span style="font-size:18px">📻</span>'; }
+}
+
+function updateNPUI(s){
+  document.getElementById('npName').textContent=s.name;
+  document.getElementById('npRegion').textContent=s.region;
+  document.getElementById('npProg').textContent='Live Broadcast';
+  setBuf(false,'Connecting…');
+  const lbl=document.getElementById('npLabel');
+  if(s.logo){ lbl.innerHTML=`<img src="${s.logo}" alt="${s.name}" onerror="this.outerHTML='<div class=vinyl-center-fallback>📻</div>'">`; }
+  else { lbl.innerHTML='<div class="vinyl-center-fallback">📻</div>'; }
+  const si=document.getElementById('npSaveIcon');
+  si.textContent=isFav(s.id)?'★':'☆';
+  document.getElementById('npRecon').textContent='';
+  fetchProg(s);
+}
+
+function fetchProg(s){
+  fetch(`https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(s.name)}&countrycode=IE&limit=3`)
+    .then(r=>r.json())
+    .then(data=>{
+      const m=data&&data.find(d=>d.name.toLowerCase().includes(s.name.split(' ')[0].toLowerCase()));
+      document.getElementById('npProg').textContent=m&&m.tags?m.tags.split(',').slice(0,3).join(' · '):'Live Broadcast';
+    }).catch(()=>{});
+}
+
+function toggleFav(e,id){
+  e.stopPropagation();
+  favs=isFav(id)?favs.filter(f=>f!==id):[...favs,id];
+  saveFavs();
+  if(curIdx>=0&&stations[curIdx].id===id) document.getElementById('npSaveIcon').textContent=isFav(id)?'★':'☆';
+  render(getList());
+  showToast(isFav(id)?'⭐ Saved to favourites':'Removed from favourites');
+}
+function toggleFavNP(){ if(curIdx>=0) toggleFav({stopPropagation:()=>{}},stations[curIdx].id); }
+function shareStation(){ if(curIdx<0) return; const s=stations[curIdx]; if(navigator.share) navigator.share({title:s.name,text:'Listening to '+s.name,url:location.href}); else { navigator.clipboard.writeText(location.href); showToast('🔗 Link copied'); } }
+function openStationWeb(){ if(curIdx<0) return; const s=stations[curIdx]; if(s.web) window.open(s.web,'_blank'); }
+function editCurrentStation(){ if(curIdx>=0){ closeNP(); openSettings(); setTimeout(()=>openEdit(curIdx),300); } }
+
+function switchTab(t){
+  curTab=t;
+  ['all','favs','recent','national','dublin','regional'].forEach(id=>{ document.getElementById('t-'+id).className='tab'+(id===t?' active':''); });
+  document.getElementById('srch').value='';
+  render(getList());
+}
+function getAllFiltered(){ const q=document.getElementById('srch').value.toLowerCase(); return stations.filter(s=>!q||s.name.toLowerCase().includes(q)||s.region.toLowerCase().includes(q)); }
+function getList(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  let list;
+  if(curTab==='favs')     list=stations.filter(s=>isFav(s.id));
+  else if(curTab==='recent') list=recent.map(id=>stations.find(s=>s.id===id)).filter(Boolean);
+  else if(curTab==='national') list=stations.filter(s=>s.cat==='national');
+  else if(curTab==='dublin')   list=stations.filter(s=>s.cat==='dublin');
+  else if(curTab==='regional') list=stations.filter(s=>s.cat==='regional');
+  else list=stations;
+  if(q) list=list.filter(s=>s.name.toLowerCase().includes(q)||s.region.toLowerCase().includes(q));
+  return list;
+}
+function doFilter(){ render(getList()); }
+
+function render(list){
+  const grid=document.getElementById('grid'),cntEl=document.getElementById('cnt');
+  grid.innerHTML='';
+  if((curTab==='favs'||curTab==='recent')&&!list.length){
+    cntEl.textContent='';
+    const icon=curTab==='favs'?'☆':'🕐',msg=curTab==='favs'?'No favourites yet<br>Tap ★ on any station':'No recent stations yet<br>Play a station to see it here';
+    grid.innerHTML=`<div class="empty"><span class="ei">${icon}</span>${msg}</div>`; return;
+  }
+  cntEl.textContent=list.length+' station'+(list.length!==1?'s':'');
+  const q=document.getElementById('srch').value;
+  const grouped=(curTab==='all'||curTab==='national'||curTab==='dublin'||curTab==='regional')&&!q;
+  if(grouped){
+    const byR={};
+    list.forEach(s=>{ (byR[s.region]=byR[s.region]||[]).push(s); });
+    RORD.forEach(r=>{ if(!byR[r]) return; const l=document.createElement('div'); l.className='sec'; l.textContent=r; grid.appendChild(l); byR[r].forEach(s=>grid.appendChild(makeCard(s))); });
+  } else { list.forEach(s=>grid.appendChild(makeCard(s))); }
+}
+
+function makeCard(s){
+  const isNow=stations[curIdx]&&stations[curIdx].id===s.id;
+  const card=document.createElement('div'); card.className='card'+(isNow?' now':'');
+  card.onclick=()=>{ startPlay(stations.indexOf(s)); openNP(); };
+  const ld=document.createElement('div'); ld.className='c-logo';
+  if(s.logo){ const img=document.createElement('img'); img.src=s.logo; img.alt=s.name; img.onerror=()=>{ ld.innerHTML='<span class="fb">📻</span>'; }; ld.appendChild(img); } else { ld.innerHTML='<span class="fb">📻</span>'; }
+  const nm=document.createElement('div'); nm.className='c-name'; nm.textContent=s.name;
+  const rg=document.createElement('div'); rg.className='c-region'; rg.textContent=s.region;
+  const fv=document.createElement('button'); fv.className='c-fav'+(isFav(s.id)?' on':''); fv.textContent=isFav(s.id)?'★':'☆'; fv.onclick=e=>toggleFav(e,s.id);
+  card.appendChild(ld); card.appendChild(nm); card.appendChild(rg); card.appendChild(fv);
+  if(isNow){ const b=document.createElement('div'); b.className='c-live'; b.textContent='● LIVE'; card.appendChild(b); }
+  return card;
+}
+
+function openNP(){ document.getElementById('np').className='np on'; }
+function closeNP(){ document.getElementById('np').className='np'; }
+
+function openSettings(){
+  const list=document.getElementById('sList'); list.innerHTML='';
+  stations.forEach((s,i)=>{
+    const row=document.createElement('div'); row.className='s-row';
+    const ld=document.createElement('div'); ld.className='s-logo';
+    if(s.logo){ const img=document.createElement('img'); img.src=s.logo; img.alt=''; img.onerror=()=>{ ld.textContent='📻'; }; ld.appendChild(img); } else { ld.textContent='📻'; }
+    const nm=document.createElement('div'); nm.className='s-name'; nm.textContent=s.name;
+    const eb=document.createElement('button'); eb.className='s-ebtn'; eb.textContent='✎ Edit'; eb.onclick=()=>openEdit(i);
+    row.appendChild(ld); row.appendChild(nm); row.appendChild(eb); list.appendChild(row);
+  });
+  document.getElementById('settings').className='settings on';
+}
+function closeSettings(){ document.getElementById('settings').className='settings'; }
+
+function openEdit(idx){
+  editIdx=idx; const s=stations[idx];
+  document.getElementById('editTitle').textContent='✎ '+s.name;
+  document.getElementById('eName').value=s.name;
+  document.getElementById('eStream').value=s.stream;
+  document.getElementById('eLogoUrl').value=s.logo||'';
+  document.getElementById('eLogoFile').value='';
+  document.getElementById('editModal').className='edit-modal on';
+}
+function closeEdit(){ document.getElementById('editModal').className='edit-modal'; }
+
+function saveEdit(){
+  if(editIdx===null) return;
+  const stream=document.getElementById('eStream').value.trim();
+  const logoUrl=document.getElementById('eLogoUrl').value.trim();
+  const file=document.getElementById('eLogoFile').files[0];
+  if(!stream){ showToast('⚠️ Stream URL required'); return; }
+  stations[editIdx].stream=stream;
+  if(file){ const rd=new FileReader(); rd.onload=e=>{ stations[editIdx].logo=e.target.result; finalEdit(); }; rd.readAsDataURL(file); }
+  else { if(logoUrl) stations[editIdx].logo=logoUrl; finalEdit(); }
+}
+function finalEdit(){ save(); closeEdit(); closeSettings(); if(curIdx===editIdx) updateNPUI(stations[editIdx]); render(getList()); openSettings(); showToast('✅ Station updated'); }
+function resetSt(){ if(editIdx===null) return; const def=DEF.find(d=>d.id===stations[editIdx].id); if(def){ stations[editIdx]={...def}; save(); finalEdit(); showToast('↺ Reset to default'); } }
+
+let toastT;
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; clearTimeout(toastT); toastT=setTimeout(()=>{ t.className='toast'; },2300); }
+
+render(getList());
+</script>
+</body>
+</html>
